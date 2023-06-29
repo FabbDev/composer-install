@@ -7,7 +7,7 @@
 <p align="center">
     <a href="https://github.com/ramsey/composer-install"><img src="http://img.shields.io/badge/source-ramsey/composer--install-blue.svg?style=flat-square" alt="Source Code"></a>
     <a href="https://github.com/ramsey/composer-install/blob/main/LICENSE"><img src="https://img.shields.io/badge/license-MIT-darkcyan.svg?style=flat-square" alt="Read License"></a>
-    <a href="https://github.com/ramsey/composer-install/actions?query=workflow%3ACI"><img src="https://img.shields.io/github/workflow/status/ramsey/composer-install/CI?logo=github&style=flat-square" alt="Build Status"></a>
+    <a href="https://github.com/ramsey/composer-install/actions/workflows/continuous-integration.yml"><img src="https://img.shields.io/github/actions/workflow/status/ramsey/composer-install/continuous-integration.yml?branch=v2&logo=github&style=flat-square" alt="Build Status"></a>
     <a href="https://codecov.io/gh/ramsey/composer-install"><img src="https://img.shields.io/codecov/c/gh/ramsey/composer-install?label=codecov&logo=codecov&style=flat-square" alt="Codecov Code Coverage"></a>
 </p>
 
@@ -173,6 +173,16 @@ even more specific, you can specify a suffix to be added to the cache key via th
 ```
 
 :warning: Note: specifying a `custom-cache-key` will take precedence over the `custom-cache-suffix`.
+
+### Fork and private repositories
+Sometimes it's needed to use the `repositories` key in your `composer.json` to pull in forks, PRs with patches or private repositories. In this case, your GitHub Action may start failing with a `Could not authenticate against github.com` error message. To solve this, you need to add a GitHub Personal Access token, and this bit to your Action configuration:
+```yaml
+env:
+   COMPOSER_AUTH: '{"github-oauth": {"github.com": "${{ secrets.COMPOSER_AUTH }}"}}'
+```
+In this example, `COMPOSER_AUTH` is the name of the secret that you'll need to create. To access public repositories, the `public_repo` scope is sufficient, while for private repositories (that you can access), `read:project` will be needed.
+
+For more information on how to do that on your repository, see [Creating a personal access token](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token) and [Creating encrypted secrets for a repository](https://docs.github.com/en/actions/security-guides/encrypted-secrets#creating-encrypted-secrets-for-a-repository) on GitHub documentation.
 
 ### Matrix Example
 
